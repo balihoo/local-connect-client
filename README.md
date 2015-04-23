@@ -1,8 +1,22 @@
-# Local Data API
+# Local Connect Client API
 This describes the javascript client for interfacing with the local data api, allowing affiliate locations to access data.
 
+## Contents
+- [Initial Setup](#initial-setup)
+- [API Setup](#api-setup)
+- API Methods
+  - [getAllCampaigns()](#connectiongetallcampaigns)
+  - [getAllTactics(campaignId)](#connectiongetalltacticscampaignid-integer)
+  - [getAllCampaignsAndTactics](#connectiongetallcampaignsandtactics)
+  - [getMetricsForTactic(tacticId)](#connectiongetmetricsfortactictacticid-integer)
+  - [getWebsiteMetrics()](#connectiongetwebsitemetrics)
+
 ## Initial Setup
-The purpose of the api is to allow locations to be able to access data pertinent to themselves. The library consists of a javascript object. In order to be able to use the object, the brand must a call to obtain a client api key and client id for each location it wants to grant access to. This typically occurs at the brand server level, and the client id and client id and api key are then injected into a dynamic page (via php or some other mechanism) so that it is accessible by the javascript object.
+The purpose of the api is to allow locations to be able to access data pertinent to themselves. The library consists of a
+javascript object. In order to be able to use the object, the brand must make a call to obtain a client api key and client
+id for each location it wants to grant access to. This typically occurs at the brand server level, and the client id and
+client id and api key are then injected into a dynamic page (via php or some other mechanism) so that it is accessible
+by the javascript object.
 
 To make the call the brand sends the following get request:
 
@@ -12,31 +26,38 @@ It requires the following query parameters (all are required):
 
 - apiKey (String): This is the brand specific api key provided by Balihoo to the brand.
 - brandKey (string): This is the brand specific indentifier, provided by Balihoo to the brand.
-- locationId (String): This is the brand specific unique location identifier that the client api key and id are being generated for.
-- groupId (String): This is brand specific group identifier. It is used to provide access to different levels of the api. Currently this field is not used internally
-- userId (String): This is the user id of the requestor of the client api key. It is uses for audit purposes. Currently this field is not used internally.
+- locationId (String): This is the brand specific unique location identifier that the client api key and id are being
+generated for.
+- groupId (String): This is brand specific group identifier. It is used to provide access to different levels of the api.
+Currently this field is not used internally
+- userId (String): This is the user id of the requestor of the client api key. It is uses for audit purposes. Currently
+this field is not used internally.
 
 Returns a javascript object:
 ```
 {clientId: xxxxxxxxx, clientApiKey: xxxxxxxxx}
 ```
 
-## API
+## API Setup
 In order to use the API the javascript object was must be included in the code.
 ```
-<script src='bc.balihoo-cloud.com/assets/localDataAPI/localDataAPI.js' type='text/javascript'></script>
+<script src='bac.balihoo-cloud.com/assets/localDataAPI/localDataAPI.js' type='text/javascript'></script>
 ```
-Once the library has been included, the library is initialized by creating a new local connection object, this is done by passing in the clientId, and clientApiKey from the above step into the LocalConnection method. The method is referenced from the 'balihoo' global variable that will be created when the library runs.
+Once the library has been included, the library is initialized by creating a new local connection object, this is done
+by passing in the clientId, and clientApiKey from the above step into the LocalConnection method. The method is referenced
+from the 'balihoo' global variable that will be created when the library runs.
 
 ```
 var connection = new balihoo.LocalConnection(clientId,clientApiKey)
 ```
 Once a local connection object is obtained, the following method calls can be used.
-NOTE: All methods return a promise.
+NOTE: All methods return a promise, or more accurately a Jquery deferred object.
 
 ## Methods
-###connection.getAllCampaigns()
-This method returns a promise that when fulfilled will return a json representation of all campaigns that reference the current location.
+### connection.getAllCampaigns()
+This method returns a promise that when fulfilled will return a json representation of all campaigns that reference the
+current location.
+
 The returned json is as follows:
 ```
 [
@@ -59,8 +80,10 @@ The returned json is as follows:
 ]
 ```
 
-###connection.getAllTactics(campaignId: Integer)
-This method takes the id of a given campaign, and then will return a promise that when fulfilled will contain a json array of all the tactics that the current location is referenced in for the given campaign.
+### connection.getAllTactics(campaignId: Integer)
+This method takes the id of a given campaign, and then will return a promise that when fulfilled will contain a json array
+of all the tactics that the current location is referenced in for the given campaign.
+
 A sample json return is as follows:
 ```
 {
@@ -88,8 +111,10 @@ A sample json return is as follows:
 }
 ```
 
-###connection.getAllCampaignsAndTactics()
-This method will return a promise that when it fulfills combines the above two api calls into one. That is it will return a json array of all campaigns the current location is used in. In addition each campaign will contain a json array of all the tactics that the current location was used in for that campaign.
+### connection.getAllCampaignsAndTactics()
+This method will return a promise that when it fulfills combines the above two api calls into one. That is it will return a
+json array of all campaigns the current location is used in. In addition each campaign will contain a json array of all the
+tactics that the current location was used in for that campaign.
 
 Sample json appears below:
 ```
@@ -134,10 +159,12 @@ Sample json appears below:
 ]
 ```
 
-###connection.getMetricsForTactic(tacticId: Integer)
-This method takes the id of a given tactic, and returns a promise that when it fulfills contains a json object with metric information. The json object returned depends on the channel of the tactic. 
+### connection.getMetricsForTactic(tacticId: Integer)
+This method takes the id of a given tactic, and returns a promise that when it fulfills contains a json object with metric
+information. The json object returned depends on the channel of the tactic.
+
 Example json responses appear below:
-####Email
+#### Email
 ```
 {
   "campaignId": 34,
@@ -148,7 +175,7 @@ Example json responses appear below:
   "clicks": 12
 }
 ```
-####Paid Search
+#### Paid Search
 ```
 {
   "campaignId": 34,
@@ -158,7 +185,7 @@ Example json responses appear below:
   "spend": 125.12
 }
 ```
-####Display
+#### Display
 ```
 {
   "campaignId": 34,
@@ -169,8 +196,11 @@ Example json responses appear below:
 }
 ```
 
-###connection.getWebsiteMetrics()
-This method will return a promise, that once resolved will contain a json object with website metrics for the current location's local website. In order for any data to be returned the current location must have a matching local website, or empty data will be returned. 
+### connection.getWebsiteMetrics()
+This method will return a promise, that once fulfilled will contain a json object with website metrics for the current
+location's local website. In order for any data to be returned the current location must have a matching local website,
+or empty data will be returned.
+
 Example json appears below:
 ```
 {
