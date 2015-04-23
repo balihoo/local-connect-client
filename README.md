@@ -11,6 +11,23 @@ This describes the javascript client for interfacing with the local data api, al
   - [getMetricsForTactic(tacticId)](#connectiongetmetricsfortactictacticid-integer)
   - [getWebsiteMetrics()](#connectiongetwebsitemetrics)
 
+## Overview
+
+### Actors/Roles
+- **Local Partner Web Browser**: End user's web browser. The end user is the local partner (affiliate, franchisee, agent, etc). We assume that the user has already authenticated with the brand's intranet or web portal.
+- **Brand Intranet Web Server**: Intranet or web portal that hosts the Local Partner Connect plugin. Manages initial user authentication and authorization.
+- **Balihoo Local Connect API**: Balihoo Local Marketing Cloud (LMC) API server. Exposes local partner campaign, tactic, and performance information via RESTful web service.
+
+![Interaction Diagram](https://www.lucidchart.com/publicSegments/view/55396a6a-2e28-47fe-a344-0dfc0a009621/image.png)
+
+### Workflow
+1. User requests a web app that exposes LMC campaigns, tactics, and results. Brand server ensures that user is authenticated and authorized to view this data.
+2. Brand server initiates a *server-to-server* request to Balihoo LMC API to generate a temporary client API id/key pair.
+3. Balihoo returns the key pair that can be used for *client-to-server* requests for partner specific data.
+4. Brand server responds with the web app requested in step 1. The app includes the javascript SDK and initializes it using the API key pair granted in step 3.
+5. The web app requests campaign, tactic, and peformance data from Balihoo LMC using the client API key pair.
+6. Baliho LMC API responds with requested data. Repeat steps 5 and 6 (do not repeat other steps unless the client key expires).
+
 ## Initial Setup
 The purpose of the api is to allow locations to be able to access data pertinent to themselves. The library consists of a
 javascript object. In order to be able to use the object, the brand must make a call to obtain a client api key and client
