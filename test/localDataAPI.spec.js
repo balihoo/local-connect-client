@@ -107,7 +107,7 @@ describe("localDataAPI", function(){
       })
     });
 
-    it("should throw error if tacticId not provided", function(){
+    it("should throw error if campaignId not provided", function(){
       expect(function() {
         connection.getAllTactics()
       }).toThrowError("getAllTactics requires a campaign id")
@@ -137,6 +137,12 @@ describe("localDataAPI", function(){
         headers: fixture.customHeaders(),
         url: fixture.buildUrl("tactic/"+fixture.tacticId+"/metrics")
       })
+    });
+
+    it("should throw error if tacticId not provided", function(){
+      expect(function() {
+        connection.getMetricsForTactic()
+      }).toThrowError("getMetricsForTactic requires a tactic id")
     });
   });
 
