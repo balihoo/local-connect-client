@@ -70,13 +70,15 @@ describe("localDataAPI", function(){
     });
 
     it("should call jquery's extend as expected if config options presented", function(){
+      $.extend.calls.reset(); // reset our spy so we don't include the 'connection' call in the beforeEach
       var myConnection = new window.balihoo.LocalConnection(fixture.clientId, fixture.clientApiKey, fixture.newDefaults);
 
       expect($.extend).toHaveBeenCalledWith(fixture.expectedDefaults(), fixture.newDefaults)
     });
 
     it("should call jquery's extend with empty object if config options not presented", function(){
-      var myConnection = new window.balihoo.LocalConnection(fixture.clientId, fixture.clientApiKey, fixture.newDefaults);
+      $.extend.calls.reset(); // reset our spy so we don't include the 'connection' call in the beforeEach
+      var myConnection = new window.balihoo.LocalConnection(fixture.clientId, fixture.clientApiKey);
 
       expect($.extend).toHaveBeenCalledWith(fixture.expectedDefaults(), {})
     });
