@@ -4,6 +4,12 @@
   var version = "v1.0";
   var defaultUrl = "https://bac.balihoo-cloud.com";
 
+  /**
+   * constructor so a LocationApi object
+   * @param clientId  the client id received from the genClientAPIKey call
+   * @param clientApiKey the client apiKey received from the genClientAPIKey call
+   * @param config configuration options to provide overrides to the defaults (typically the defaultUrl)
+   */
   var LocationApi = function (clientId, clientApiKey, config) {
     config = config || {};
 
@@ -23,37 +29,64 @@
 
     //baseApiConfig settings can be overridden by given config object
     this.config = ($.extend(baseApiConfig, config));
+
   };
 
   /**
-   * Convenience method for location api calls
-   * takes arbitrary number of parameters after the configuration object and builds the rest url
-   * @returns get promise to target url
+   * convenience wrapper for makeCall (private)
+   * (private, hidden in anonymous function scope)
+   * @param url
    */
-  function getJSONP(config) {
-    var url = config.baseUrl + "/localdata/" + version;
-
-    //REST url builder
-    if (arguments && arguments.length > 1) {
-      for (var i = 1; i < arguments.length; i++)
-        url += "/" + arguments[i]
-    }
-
-    return $.ajax({
-      dataType: "jsonp",
-      url: url,
-      data: {
-        "clientId": config.clientId,
-        "clientApiKey": config.clientApiKey
-      }
-    });
+  function get(config, url) {
+    return makeCall("GET", config, url)
   }
+
+  /**
+   * convenience wrapper for makeCall
+   * (private, hidden in anonymous function scope)
+   * @param url
+   * @param data
+   */
+  function post(config, url, data) {
+    return makeCall("POST", config, url, data)
+  }
+
+  /**
+   * return a jquery promise to a Local Partner connect endpoint
+   * with the correct method and url
+   * (private, hidden in anonymous function scope)
+   * @param config
+   * @param method
+   * @param url
+   * @param data
+   * @returns {*}
+   */
+  function makeCall(method, config, url, data) {
+
+    url = config.baseUrl + "/localdata/" + version + '/' + url;
+
+    var ajaxOptions = {
+      method: method,
+      dataType: "json",
+      headers: {
+        "X-ClientId": config.clientId,
+        "X-ClientApiKey": config.clientApiKey
+      },
+      url: url
+    };
+
+    if (data) ajaxOptions.data = data;
+
+
+    return $.ajax(ajaxOptions);
+  }
+
 
   /**
    * Gets all the campaigns for your location
    */
   LocationApi.prototype.getAllCampaigns = function () {
-    return getJSONP(this.config, "campaigns");
+    return get(this.config, "campaigns");
   };
 
   /**
@@ -64,14 +97,14 @@
       throw new Error("getAllTactics requires a campaign id");
     }
 
-    return getJSONP(this.config, "campaign", campaignId, "tactics");
+    return get(this.config, "campaign/"+campaignId+"/tactics");
   };
 
   /**
    * Gets all campaigns with expanded tactics for your location
    */
   LocationApi.prototype.getAllCampaignsAndTactics = function () {
-    return getJSONP(this.config, "campaignswithtactics");
+    return get(this.config, "campaignswithtactics");
   };
 
   /**
@@ -82,14 +115,14 @@
       throw new Error("getMetricsForTactic requires a tactic id");
     }
 
-    return getJSONP(this.config, "tactic", tacticId, "metrics");
+    return get(this.config, "tactic/"+tacticId+"/metrics");
   };
 
   /**
    * Gets the local website information for the your location
    */
   LocationApi.prototype.getWebsiteMetrics = function () {
-    return getJSONP(this.config, "websitemetrics");
+    return get(this.config, "websitemetrics");
   };
 
   /**
