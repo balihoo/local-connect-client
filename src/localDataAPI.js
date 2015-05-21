@@ -5,10 +5,10 @@
   var defaultUrl = "https://bac.balihoo-cloud.com";
 
   /**
-   * constructor so a LocationApi object
+   * constructor for a LocationApi object
    * @param clientId  the client id received from the genClientAPIKey call
    * @param clientApiKey the client apiKey received from the genClientAPIKey call
-   * @param config configuration options to provide overrides to the defaults (typically the defaultUrl)
+   * @param config optional configuration options to provide overrides to the defaults (typically the defaultUrl)
    */
   var LocationApi = function (clientId, clientApiKey, config) {
     config = config || {};
