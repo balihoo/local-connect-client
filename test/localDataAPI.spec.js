@@ -39,6 +39,10 @@ describe("localDataAPI", function(){
       baseUrl: "new base url"
     },
 
+    profileData: {
+      anyData: "dont really care what the data is here"
+    },
+
     buildUrl: function(url) {  // utility function to save typing
       return "https://bac.balihoo-cloud.com/localdata/v1.0/" + url;
     }
@@ -158,6 +162,56 @@ describe("localDataAPI", function(){
         headers: fixture.customHeaders(),
         url: fixture.buildUrl("websitemetrics")
       })
+    });
+  });
+
+  /**************************************************
+   * Profile tab tests
+   *
+   **************************************************/
+  describe("getProfileForm", function(){
+    it("should call jquery ajax method with get expected parameters", function(){
+      connection.getProfileForm();
+
+      expect($.ajax).toHaveBeenCalledWith({
+        method: "GET",
+        dataType: "json",
+        headers: fixture.customHeaders(),
+        url: fixture.buildUrl("profile/form")
+      })
+    });
+  });
+
+  describe("getProfileData", function(){
+    it("should call jquery ajax method with get expected parameters", function(){
+      connection.getProfileData();
+
+      expect($.ajax).toHaveBeenCalledWith({
+        method: "GET",
+        dataType: "json",
+        headers: fixture.customHeaders(),
+        url: fixture.buildUrl("profile/data")
+      })
+    });
+  });
+
+  describe("updateProfileData", function(){
+    it("should call jquery ajax method with get expected parameters", function(){
+      connection.updateProfileData(fixture.profileData);
+
+      expect($.ajax).toHaveBeenCalledWith({
+        method: "PUT",
+        dataType: "json",
+        headers: fixture.customHeaders(),
+        url: fixture.buildUrl("profile/data"),
+        data: fixture.profileData
+      })
+    });
+
+    it("should throw error if profile Data not provided", function(){
+      expect(function() {
+        connection.updateProfileData()
+      }).toThrowError("updateProfileData requires a profile data object")
     });
   });
 
