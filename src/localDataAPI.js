@@ -175,7 +175,7 @@
       throw new Error("updateProfileData requires a profile data object");
     }
 
-    return put(this.config, "profile/data", profileData);
+    return put(this.config, "profile/data", {profileData: profileData});
   };
 
   /**

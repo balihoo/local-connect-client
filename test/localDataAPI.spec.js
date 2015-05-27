@@ -204,7 +204,7 @@ describe("localDataAPI", function(){
         dataType: "json",
         headers: fixture.customHeaders(),
         url: fixture.buildUrl("profile/data"),
-        data: fixture.profileData
+        data: {profileData: fixture.profileData}
       })
     });
 
