@@ -39,18 +39,26 @@ describe("localDataAPI", function(){
       baseUrl: "new base url"
     },
 
-    profileData: {
-      anyData: "dont really care what the data is here"
+    profileData: function() {
+      return {
+        anyData: "dont really care what the data is here",
+        lastEventId: this.lastEventId
+      }
     },
+
+    lastEventId: "any event",
 
     buildUrl: function(url) {  // utility function to save typing
       return "https://bac.balihoo-cloud.com/localdata/v1.0/" + url;
-    }
+    },
+
+    emptyPromise: {}
   };
 
   beforeEach(function() {
     $.extend = jasmine.createSpy('extend').and.callFake(function(sourceA, sourceB) { return sourceA});  // we simply mock jQUery's extend to return the original for now
-    $.ajax = jasmine.createSpy('ajax');
+    $.ajax = jasmine.createSpy('ajax').and.returnValue(fixture.emptyPromise);
+    fixture.emptyPromise.then = jasmine.createSpy("then").and.callFake(function(func) {func(fixture.profileData())});   // fake our promise response
 
     connection = new window.balihoo.LocalConnection(fixture.clientId, fixture.clientApiKey)
   });
@@ -71,6 +79,10 @@ describe("localDataAPI", function(){
 
     it("should return object with expected defaults", function(){
       expect(connection.config).toEqual(fixture.expectedDefaults())
+    });
+
+    it("should expect lastEventId to be null", function(){
+      expect(connection.lastEventId).toBeNull()
     });
 
     it("should call jquery's extend as expected if config options presented", function(){
@@ -197,14 +209,15 @@ describe("localDataAPI", function(){
 
   describe("updateProfileData", function(){
     it("should call jquery ajax method with get expected parameters", function(){
-      connection.updateProfileData(fixture.profileData);
+      connection.lastEventId = fixture.lastEventId;
+      connection.updateProfileData(fixture.profileData());
 
       expect($.ajax).toHaveBeenCalledWith({
         method: "PUT",
         dataType: "json",
         headers: fixture.customHeaders(),
         url: fixture.buildUrl("profile/data"),
-        data: {profileData: fixture.profileData}
+        data: {profileData: fixture.profileData(), lastEventId: fixture.lastEventId}
       })
     });
 
@@ -212,6 +225,12 @@ describe("localDataAPI", function(){
       expect(function() {
         connection.updateProfileData()
       }).toThrowError("updateProfileData requires a profile data object")
+    });
+
+    it("should throw error if lastEventId not defined", function(){
+      expect(function() {
+        connection.updateProfileData(fixture.profileData)
+      }).toThrowError("getProfileData must be run before this call to obtain and lastEventId")
     });
   });
 

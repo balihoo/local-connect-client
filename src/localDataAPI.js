@@ -30,6 +30,7 @@
     //baseApiConfig settings can be overridden by given config object
     this.config = ($.extend(baseApiConfig, config));
 
+    this.lastEventId = null;  // we track the last access to blip. Used with the update functionality
   };
 
   /**
@@ -160,7 +161,10 @@
    * request header
    */
   LocationApi.prototype.getProfileData = function() {
-    return get(this.config, "profile/data");
+    return get(this.config, "profile/data")
+      .then(function(profile) {
+        this.lastEventId = profile.lastEventId;  // extract the eventId from the json data
+      });
   };
 
   /**
@@ -175,7 +179,11 @@
       throw new Error("updateProfileData requires a profile data object");
     }
 
-    return put(this.config, "profile/data", {profileData: profileData});
+    if (this.lastEventId == null) {
+      throw new Error("getProfileData must be run before this call to obtain and lastEventId");
+    }
+
+    return put(this.config, "profile/data", {profileData: profileData, lastEventId: this.lastEventId});
   };
 
   /**
