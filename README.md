@@ -47,7 +47,7 @@ It requires the following query parameters (all are required):
 
 - apiKey (String): This is the brand specific api key provided by Balihoo to the brand.
 - brandKey (string): This is the brand specific indentifier, provided by Balihoo to the brand.
-- locationId (String): This is the brand specific unique location identifier that the client api key and id are being
+- locationKey (String): This is the brand specific unique location identifier that the client api key and id are being
 generated for.
 - groupId (String): This is brand specific group identifier. It is used to provide access to different levels of the api.
 Currently this field is not used internally
