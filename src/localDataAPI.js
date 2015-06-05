@@ -87,7 +87,10 @@
       url: url
     };
 
-    if (data) ajaxOptions.data = data;
+    if (data) {
+      ajaxOptions.contentType = "text/json";
+      ajaxOptions.data = JSON.stringify(data);
+    }
 
 
     return $.ajax(ajaxOptions);

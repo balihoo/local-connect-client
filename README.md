@@ -391,5 +391,15 @@ below. See the latest blip documentation for more information:
 This method returns a promise that will attempt to update the given profileData for the current location
 and brand. The getProfileData call above *must* have been called before this call, as some internal blip
 data is necessary for this call to be completed successfully.
-This promise resolves to an empty object on successful completion. The profileData object should in the exact
-same format as the object that was received from the getProfileData call, with the necessary fields updated.
+This promise resolves to an empty object on successful completion. The profileData object can be the object
+returned from the getProfileData call above with the required updated fields changed, or simply the fields
+that need to be updated only. e.g. from the example above
+
+```
+{
+  "name": "Changed Alexander Balihoo of Kansas"
+}
+```
+
+In the above example, only the name field will be updated. This saves having to send the entire profile data
+object back.

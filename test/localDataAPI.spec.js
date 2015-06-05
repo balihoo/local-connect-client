@@ -231,7 +231,8 @@ describe("localDataAPI", function(){
         dataType: "json",
         headers: fixture.customHeaders(),
         url: fixture.buildUrl("profile/data"),
-        data: {profileData: fixture.profileData(), lastEventId: fixture.lastEventId}
+        contentType: "text/json",
+        data: JSON.stringify({profileData: fixture.profileData(), lastEventId: fixture.lastEventId})
       })
     });
 
