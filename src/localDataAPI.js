@@ -30,6 +30,7 @@
     //baseApiConfig settings can be overridden by given config object
     this.config = ($.extend(baseApiConfig, config));
 
+    this.lastEventId = null;  // we track the last access to blip. Used with the update functionality
   };
 
   /**
@@ -50,6 +51,17 @@
   function post(config, url, data) {
     return makeCall("POST", config, url, data)
   }
+
+  /**
+   * convenience wrapper for makeCall
+   * (private, hidden in anonymous function scope)
+   * @param url
+   * @param data
+   */
+  function put(config, url, data) {
+    return makeCall("PUT", config, url, data)
+  }
+
 
   /**
    * return a jquery promise to a Local Partner connect endpoint
@@ -123,6 +135,55 @@
    */
   LocationApi.prototype.getWebsiteMetrics = function () {
     return get(this.config, "websitemetrics");
+  };
+
+
+  /***************************************
+   *
+   * Profile Tab Endpoints
+   *
+   ***************************************/
+
+  /**
+   * returns a json object that contains the code
+   * for the current brands profile tabs form
+   * The current brand is determined from the
+   * clientId sent in the request header
+   */
+  LocationApi.prototype.getProfileForm = function() {
+    return get(this.config, "profile/form");
+  };
+
+  /**
+   * returns the current profile information from
+   * blip for the current location. Location is
+   * extracted from the clientId sent in the
+   * request header
+   */
+  LocationApi.prototype.getProfileData = function() {
+    return get(this.config, "profile/data")
+      .then(function(profile) {
+        this.lastEventId = profile.lastEventId;  // extract the eventId from the json data
+      });
+  };
+
+  /**
+   * updates the profile information for the given
+   * brand with the given profile data for the
+   * current location. The location is
+   * extracted from the clientId sent in the
+   * request header
+   */
+  LocationApi.prototype.updateProfileData = function(profileData) {
+    if (typeof profileData == 'undefined') {
+      throw new Error("updateProfileData requires a profile data object");
+    }
+
+    if (this.lastEventId == null) {
+      throw new Error("getProfileData must be run before this call to obtain and lastEventId");
+    }
+
+    return put(this.config, "profile/data", {profileData: profileData, lastEventId: this.lastEventId});
   };
 
   /**

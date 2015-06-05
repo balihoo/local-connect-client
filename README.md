@@ -10,6 +10,10 @@ This describes the javascript client for interfacing with the local data api, al
   - [getAllCampaignsAndTactics](#connectiongetallcampaignsandtactics)
   - [getMetricsForTactic(tacticId)](#connectiongetmetricsfortactictacticid-integer)
   - [getWebsiteMetrics()](#connectiongetwebsitemetrics)
+  - [getWebsiteMetrics()](#connectiongetwebsitemetrics)
+  - [getProfileForm()](#connectiongetprofileform)
+  - [getProfileData()](#connectiongetProfileData)
+  - [updateProfileData(profileData)](#connectionupdateprofiledataprofiledata-object)
 
 ## Overview
 
@@ -242,3 +246,20 @@ Example json appears below:
   }
 }
 ```
+
+### connection.getProfileForm()
+This method returns a promise which will fetch the corresponding profile form json information from formbuilder.
+The form builder libraries will need to be installed to use the returned form information. This endpoint simply
+proxies to form builder, so see form builder documentation for more information on how to use the returned result
+
+### connection.getProfileData()
+This method will return a promise for the latest profile Data from blip. Blip also returns a lastEventId
+which is cached by this method for use with updateProfileData below.
+
+The method simply proxies the blip output for the blip call to  GET /brand/{brandKey}/location/{locationKey}
+See blip documentation for the expected response
+
+### connection.updateProfileData(profileData: Object)
+This method returns a promise that will attempt to update the given profileData for the current location
+and brand. Blip excepts a lastEventId to be sent with this operation, which is cached from the previous getProfileData.
+Therefore getProfileData must be run before this can be used.
