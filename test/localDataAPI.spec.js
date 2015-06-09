@@ -39,9 +39,13 @@ describe("localDataAPI", function(){
       baseUrl: "new base url"
     },
 
+    profileObject: {
+      anyData: "anyStuff here"
+    },
+
     profileData: function() {
       return {
-        anyData: "dont really care what the data is here",
+        document: this.profileObject,  // so we can see what object we get back
         lastEventId: this.lastEventId
       }
     },
@@ -58,7 +62,7 @@ describe("localDataAPI", function(){
   beforeEach(function() {
     $.extend = jasmine.createSpy('extend').and.callFake(function(sourceA, sourceB) { return sourceA});  // we simply mock jQUery's extend to return the original for now
     $.ajax = jasmine.createSpy('ajax').and.returnValue(fixture.emptyPromise);
-    fixture.emptyPromise.then = jasmine.createSpy("then").and.callFake(function(func) {func(fixture.profileData())});   // fake our promise response
+    fixture.emptyPromise.then = jasmine.createSpy("then").and.callFake(function(func) {return func(fixture.profileData())});   // fake our promise response
 
     connection = new window.balihoo.LocalConnection(fixture.clientId, fixture.clientApiKey)
   });
@@ -205,6 +209,16 @@ describe("localDataAPI", function(){
         url: fixture.buildUrl("profile/data")
       })
     });
+
+    it("should set the lastEventId when resolved", function(){
+      connection.getProfileData();
+      expect(connection.lastEventId).toEqual(fixture.lastEventId)
+    });
+
+    it("should extract the document object from the returned data", function(){
+      var result = connection.getProfileData();
+      expect(result).toEqual(fixture.profileObject)
+    });
   });
 
   describe("updateProfileData", function(){
@@ -217,7 +231,8 @@ describe("localDataAPI", function(){
         dataType: "json",
         headers: fixture.customHeaders(),
         url: fixture.buildUrl("profile/data"),
-        data: {profileData: fixture.profileData(), lastEventId: fixture.lastEventId}
+        contentType: "text/json",
+        data: JSON.stringify({profileData: fixture.profileData(), lastEventId: fixture.lastEventId})
       })
     });
 

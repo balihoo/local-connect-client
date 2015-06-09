@@ -30,7 +30,7 @@ This describes the javascript client for interfacing with the local data api, al
 3. Balihoo returns the key pair that can be used for *client-to-server* requests for partner specific data.
 4. Brand server responds with the web app requested in step 1. The app includes the javascript SDK and initializes it using the API key pair granted in step 3.
 5. The web app requests campaign, tactic, and peformance data from Balihoo LMC using the client API key pair.
-6. Baliho LMC API responds with requested data. Repeat steps 5 and 6 (do not repeat other steps unless the client key expires).
+6. Balihoo LMC API responds with requested data. Repeat steps 5 and 6 (do not repeat other steps unless the client key expires).
 
 ## Initial Setup
 The purpose of the api is to allow locations to be able to access data pertinent to themselves. The library consists of a
@@ -46,12 +46,12 @@ https://bac.balihoo-cloud.com/v1.0/genClientAPIKey
 It requires the following query parameters (all are required):
 
 - apiKey (String): This is the brand specific api key provided by Balihoo to the brand.
-- brandKey (string): This is the brand specific indentifier, provided by Balihoo to the brand.
-- locationId (String): This is the brand specific unique location identifier that the client api key and id are being
+- brandKey (string): This is the brand specific identifier, provided by Balihoo to the brand.
+- locationKey (String): This is the brand specific unique location identifier that the client api key and id are being
 generated for.
 - groupId (String): This is brand specific group identifier. It is used to provide access to different levels of the api.
 Currently this field is not used internally
-- userId (String): This is the user id of the requestor of the client api key. It is uses for audit purposes. Currently
+- userId (String): This is the user id of the requester of the client api key. It is uses for audit purposes. Currently
 this field is not used internally.
 
 Returns a javascript object:
@@ -253,13 +253,153 @@ The form builder libraries will need to be installed to use the returned form in
 proxies to form builder, so see form builder documentation for more information on how to use the returned result
 
 ### connection.getProfileData()
-This method will return a promise for the latest profile Data from blip. Blip also returns a lastEventId
-which is cached by this method for use with updateProfileData below.
+This method will return a promise which when fulfilled will contain the latest profile Data from blip. Blip also returns some meta
+data which is necessary for the updateProfileData call below, and cached internally. Therefore this call must proceed the
+updateProfileData call.
 
-The method simply proxies the blip output for the blip call to  GET /brand/{brandKey}/location/{locationKey}
-See blip documentation for the expected response
+An example of a response appears below, note the information for different brands or locations may vary from the output
+below. See the latest blip documentation for more information:
+
+```
+{
+  "name": "Alexander Balihoo of Kansas",
+  "urls": {"home": "demo.balihoo-cloud.com/1816431331"},
+  "address": {
+    "city": "Kansas",
+    "email": "kalexander@demo.balihoo-cloud.com",
+    "line1": "133 NE 91 St",
+    "line2": null,
+    "phone": "(149) 555-8673",
+    "state": "MO",
+    "country": "US",
+    "latitude": null,
+    "timeZone": null,
+    "longitude": null,
+    "postalCode": "64155"
+  },
+  "balihoo": {
+    "legacy": {
+      "test": false,
+      "closed": null,
+      "segments": {
+        "Tier 1": {"startDate": "2014-06-11"},
+        "Default": {"startDate": "2000-01-01"},
+        "Midwest": {"startDate": "2014-06-11"}
+      },
+      "affiliateId": 440113
+    },
+    "localSite": {
+      "brandUrl": "http://demo.microsites.balihoo-cloud.com.dev.balihoo-cloud.com/alexanderbalihooofkansas1-64155/kansas-mo",
+      "vanityUrl": null
+    }
+  },
+  "markets": {
+    "zips": [],
+    "radius": {
+      "unit": "mile",
+      "distance": null,
+      "latitude": null,
+      "longitude": null
+    }
+  },
+  "brandKey": "demo",
+  "document": {
+    "name": "Alexander Balihoo of Simon",
+    "urls": {"home": "demo.balihoo-cloud.com/1816431331"},
+    "address": {
+      "city": "Kansas",
+      "email": "kalexander@demo.balihoo-cloud.com",
+      "line1": "133 NE 91 St",
+      "line2": null,
+      "phone": "(149) 555-8673",
+      "state": "MO",
+      "country": "US",
+      "latitude": null,
+      "timeZone": null,
+      "longitude": null,
+      "postalCode": "64155"
+    },
+    "balihoo": {
+      "legacy": {
+        "test": false,
+        "closed": null,
+        "segments": {
+          "Tier 1": {"startDate": "2014-06-11"},
+          "Default": {"startDate": "2000-01-01"},
+          "Midwest": {"startDate": "2014-06-11"}
+        },
+        "affiliateId": 440113
+      },
+      "localSite": {
+        "brandUrl": "http://demo.microsites.balihoo-cloud.com.dev.balihoo-cloud.com/alexanderbalihooofkansas1-64155/kansas-mo",
+        "vanityUrl": null
+      }
+    },
+    "markets": {
+      "zips": [],
+      "radius": {
+        "unit": "mile",
+        "distance": null,
+        "latitude": null,
+        "longitude": null
+      }
+    },
+    "brandKey": "demo",
+    "paidSearch": {
+      "url": "demo.balihoo-cloud.com/1816431331",
+      "budget": {
+        "apr": null,
+        "aug": null,
+        "dec": null,
+        "feb": null,
+        "jan": null,
+        "jul": null,
+        "jun": null,
+        "mar": null,
+        "may": null,
+        "nov": null,
+        "oct": null,
+        "sep": null
+      },
+      "phonePrimary": null
+    },
+    "locationKey": "1816431331-1"
+  },
+  "paidSearch": {
+    "url": "demo.balihoo-cloud.com/1816431331",
+    "budget": {
+      "apr": null,
+      "aug": null,
+      "dec": null,
+      "feb": null,
+      "jan": null,
+      "jul": null,
+      "jun": null,
+      "mar": null,
+      "may": null,
+      "nov": null,
+      "oct": null,
+      "sep": null
+    },
+    "phonePrimary": null
+  },
+  "locationKey": "1816431331-1"
+}
+```
 
 ### connection.updateProfileData(profileData: Object)
 This method returns a promise that will attempt to update the given profileData for the current location
-and brand. Blip excepts a lastEventId to be sent with this operation, which is cached from the previous getProfileData.
-Therefore getProfileData must be run before this can be used.
+and brand. The getProfileData call above *must* have been called before this call, as some internal blip
+data is necessary for this call to be completed successfully.
+This promise resolves to an empty object on successful completion. The profileData object can be the object
+returned from the getProfileData call above with the required updated fields changed, or simply the fields
+that need to be updated only. e.g. from the example above
+
+```
+{
+  "name": "Changed Alexander Balihoo of Kansas"
+}
+```
+
+In the above example, only the name field will be updated. This saves having to send the entire profile data
+object back.

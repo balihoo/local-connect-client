@@ -87,7 +87,10 @@
       url: url
     };
 
-    if (data) ajaxOptions.data = data;
+    if (data) {
+      ajaxOptions.contentType = "text/json";
+      ajaxOptions.data = JSON.stringify(data);
+    }
 
 
     return $.ajax(ajaxOptions);
@@ -161,9 +164,11 @@
    * request header
    */
   LocationApi.prototype.getProfileData = function() {
+    var self = this;  // for the closure below
     return get(this.config, "profile/data")
       .then(function(profile) {
-        this.lastEventId = profile.lastEventId;  // extract the eventId from the json data
+        self.lastEventId = profile.lastEventId;  // extract the eventId from the json data
+        return profile.document;  // return the actual document object
       });
   };
 
