@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-FILE=$(echo "$1" | sed s/\//\\\//g)   # escape the // in the url (i.e. https://xxxx) so that it doesn't error in the second sed command
+FILE=$1
 BASEPATH=$2
 
 echo "Patching base url..."
-sed -i "s/{{baseUrl}}/$BASEPATH/" $FILE
+sed -i "s@{{baseUrl}}@$BASEPATH@" $FILE
