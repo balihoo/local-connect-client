@@ -29,7 +29,7 @@ describe("localDataAPI", function(){
       return {
         clientId: this.clientId,
         clientApiKey: this.clientApiKey,
-        baseUrl: "https://bac.balihoo-cloud.com"
+        baseUrl: "{{baseUrl}}"
       }
     },
 
@@ -53,7 +53,7 @@ describe("localDataAPI", function(){
     lastEventId: "any event",
 
     buildUrl: function(url) {  // utility function to save typing
-      return "https://bac.balihoo-cloud.com/localdata/v1.0/" + url;
+      return "{{baseUrl}}/localdata/v1.0/" + url;
     },
 
     emptyPromise: {}
