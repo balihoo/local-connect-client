@@ -2,7 +2,7 @@
   exports.balihoo = exports.balihoo || {};
 
   var version = "v1.0";
-  var defaultUrl = "{{baseUrl}}";   // this is replaced at build time
+  var defaultUrl = "https://{{baseUrl}}";   // this is replaced at build time
 
   /**
    * constructor for a LocationApi object
