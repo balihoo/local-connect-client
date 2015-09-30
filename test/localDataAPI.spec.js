@@ -56,8 +56,17 @@ describe("localDataAPI", function(){
       return "https://bac.balihoo-cloud.com/localdata/v1.0/" + url;
     },
 
-    emptyPromise: {}
-  };
+    emptyPromise: {},
+
+    defaultApiOpts: {
+      locations: ['lockey1', 'lockey2'],
+      from: new Date('2015/01/01'),
+      to: new Date('2015/01/30')
+    },
+
+    defaultApiOptsExpectedQueryString: '?locations=lockey1,lockey2&from=2015-01-01&to=2015-01-30'
+
+};
 
   beforeEach(function() {
     $.extend = jasmine.createSpy('extend').and.callFake(function(sourceA, sourceB) { return sourceA});  // we simply mock jQUery's extend to return the original for now
@@ -106,26 +115,26 @@ describe("localDataAPI", function(){
 
   describe("getAllCampaigns method should", function(){
     it("should call jquery ajax method with get expected parameters", function(){
-      connection.getAllCampaigns();
+      connection.getAllCampaigns(fixture.defaultApiOpts);
 
       expect($.ajax).toHaveBeenCalledWith({
         method: "GET",
         dataType: "json",
         headers: fixture.customHeaders(),
-        url: fixture.buildUrl("campaigns")
+        url: fixture.buildUrl("campaigns"+fixture.defaultApiOptsExpectedQueryString)
       })
     });
   });
 
   describe("getAllTactics method should", function(){
     it("should call jquery ajax method with get expected parameters", function(){
-      connection.getAllTactics(fixture.campaignId);
+      connection.getAllTactics(fixture.campaignId, fixture.defaultApiOpts);
 
       expect($.ajax).toHaveBeenCalledWith({
         method: "GET",
         dataType: "json",
         headers: fixture.customHeaders(),
-        url: fixture.buildUrl("campaign/"+fixture.campaignId+"/tactics")
+        url: fixture.buildUrl("campaign/"+fixture.campaignId+"/tactics"+fixture.defaultApiOptsExpectedQueryString)
       })
     });
 
@@ -138,26 +147,26 @@ describe("localDataAPI", function(){
 
   describe("getAllCampaignsAndTactics", function(){
     it("should call jquery ajax method with get expected parameters", function(){
-      connection.getAllCampaignsAndTactics();
+      connection.getAllCampaignsAndTactics(fixture.defaultApiOpts);
 
       expect($.ajax).toHaveBeenCalledWith({
         method: "GET",
         dataType: "json",
         headers: fixture.customHeaders(),
-        url: fixture.buildUrl("campaignswithtactics")
+        url: fixture.buildUrl("campaignswithtactics"+fixture.defaultApiOptsExpectedQueryString)
       })
     });
   });
 
   describe("getMetricsForTactic", function(){
     it("should call jquery ajax method with get expected parameters", function(){
-      connection.getMetricsForTactic(fixture.tacticId);
+      connection.getMetricsForTactic(fixture.tacticId, fixture.defaultApiOpts);
 
       expect($.ajax).toHaveBeenCalledWith({
         method: "GET",
         dataType: "json",
         headers: fixture.customHeaders(),
-        url: fixture.buildUrl("tactic/"+fixture.tacticId+"/metrics")
+        url: fixture.buildUrl("tactic/"+fixture.tacticId+"/metrics"+fixture.defaultApiOptsExpectedQueryString)
       })
     });
 
@@ -170,13 +179,13 @@ describe("localDataAPI", function(){
 
   describe("getWebsiteMetrics", function(){
     it("should call jquery ajax method with get expected parameters", function(){
-      connection.getWebsiteMetrics();
+      connection.getWebsiteMetrics(fixture.defaultApiOpts);
 
       expect($.ajax).toHaveBeenCalledWith({
         method: "GET",
         dataType: "json",
         headers: fixture.customHeaders(),
-        url: fixture.buildUrl("websitemetrics")
+        url: fixture.buildUrl("websitemetrics"+fixture.defaultApiOptsExpectedQueryString)
       })
     });
   });
