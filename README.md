@@ -48,7 +48,7 @@ It requires the following query parameters (all are required):
 - apiKey (String): This is the brand specific api key provided by Balihoo to the brand.
 - brandKey (string): This is the brand specific identifier, provided by Balihoo to the brand.
 - locationKey (String): This is the brand specific unique location identifier that the client api key and id are being
-generated for.
+generated for. This is an optional parameter, if omitted, session will allow request for all locations.
 - groupId (String): This is brand specific group identifier. It is used to provide access to different levels of the api.
 Currently this field is not used internally
 - userId (String): This is the user id of the requester of the client api key. It is uses for audit purposes. Currently
@@ -80,6 +80,8 @@ This method returns a promise that when fulfilled will return a json representat
 current location.
 
 The returned json is as follows:
+
+#### opts.locations contains 0 or 1 location:
 ```
 [
   {
@@ -101,11 +103,55 @@ The returned json is as follows:
 ]
 ```
 
+#### opts.locations contains more than 1 location:
+```
+{
+  "location1": [
+    {
+      "id": 34,
+      "title": "Test Campaign",
+      "description": "a campaign that is an example",
+      "start" : "2014-05-02",
+      "end": "2014-06-05",
+      "status": "active"
+    },
+    {
+      "id": 23,
+      "title": "Another Campaign",
+      "description": "the other example campaign",
+      "start" : "2014-01-02",
+      "end": "2014-01-28",
+      "status": "active"
+    }
+  ],
+  "location2": [
+    {
+      "id": 34,
+      "title": "Test Campaign",
+      "description": "a campaign that is an example",
+      "start" : "2014-05-02",
+      "end": "2014-06-05",
+      "status": "active"
+    },
+    {
+      "id": 23,
+      "title": "Another Campaign",
+      "description": "the other example campaign",
+      "start" : "2014-01-02",
+      "end": "2014-01-28",
+      "status": "active"
+    }
+  ]
+}
+```
+
 ### connection.getAllTactics(campaignId: Integer)
 This method takes the id of a given campaign, and then will return a promise that when fulfilled will contain a json array
 of all the tactics that the current location is referenced in for the given campaign.
 
 A sample json return is as follows:
+
+#### opts.locations contains 0 or 1 location:
 ```
 {
   "campaignId": 12,
@@ -132,12 +178,66 @@ A sample json return is as follows:
 }
 ```
 
+#### opts.locations contains more than 1 location:
+```
+{
+  "location1": {
+    "campaignId": 12,
+    "tactics": [
+      {
+        "id": 12,
+        "title": "Tactic Name",
+        "start": "2014-05-02",
+        "end": "2014-06-05",
+        "channel": "Email",
+        "description": "A tactic description would go here if it exists",
+        "creative": "http://url.to/creative/image/or/html"
+      },
+      {
+        "id": 24,
+        "title": "Another Tactic Name",
+        "start": "2014-01-02",
+        "end": "2014-01-12",
+        "channel": "Display",
+        "description": "Another tactic description would go here if it exists",
+        "creative": "http://url.to/creative/image/or/html"
+      }
+    ]
+  },
+  "location2": {
+    "campaignId": 12,
+    "tactics": [
+      {
+        "id": 12,
+        "title": "Tactic Name",
+        "start": "2014-05-02",
+        "end": "2014-06-05",
+        "channel": "Email",
+        "description": "A tactic description would go here if it exists",
+        "creative": "http://url.to/creative/image/or/html"
+      },
+      {
+        "id": 24,
+        "title": "Another Tactic Name",
+        "start": "2014-01-02",
+        "end": "2014-01-12",
+        "channel": "Display",
+        "description": "Another tactic description would go here if it exists",
+        "creative": "http://url.to/creative/image/or/html"
+      }
+    ]
+  }
+}
+```
+
 ### connection.getAllCampaignsAndTactics()
-This method will return a promise that when it fulfills combines the above two api calls into one. That is it will return a
+This method will return a promise that when it fulfills combines the above two api calls into one. It returns a
 json array of all campaigns the current location is used in. In addition each campaign will contain a json array of all the
 tactics that the current location was used in for that campaign.
 
 Sample json appears below:
+
+#### opts.locations contains 0 or 1 location:
 ```
 [
   {
@@ -180,6 +280,81 @@ Sample json appears below:
 ]
 ```
 
+#### opts.locations contains more than 1 location:
+```
+{
+  "location1": [
+    {
+      "id": 34,
+      "title": "Test Campaign",
+      "description": "a campaign that is an example",
+      "start" : "2014-01-02",
+      "end": "2014-06-05",
+      "status": "active",
+      "tactics":  [
+        {
+          "id": 12,
+          "title": "Tactic Name",
+          "start" : "2014-05-02",
+          "end": "2014-06-05",
+          "channel": "Email",
+          "description": "A tactic description would go here if it exists",
+          "creative": "http://url.to/creative/image/or/html"
+        },
+        {
+          "id": 24,
+          "title": "Another Tactic Name",
+          "start" : "2014-01-02",
+          "end": "2014-01-12",
+          "channel": "Display",
+          "description": "Another tactic description would go here if it exists",
+          "creative": "http://url.to/creative/image/or/html"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "title": "Another Campaign",
+      "description": "the other example campaign",
+      "start" : "2014-01-02",
+      "end": "2014-01-28",
+      "status": "active",
+      "tactics": []
+    }
+  ],
+  "location2": [
+    {
+      "id": 35,
+      "title": "Test Campaign #2",
+      "description": "a campaign that is an example",
+      "start" : "2014-01-02",
+      "end": "2014-06-05",
+      "status": "active",
+      "tactics":  [
+        {
+          "id": 12,
+          "title": "Tactic Name",
+          "start" : "2014-05-02",
+          "end": "2014-06-05",
+          "channel": "Email",
+          "description": "A tactic description would go here if it exists",
+          "creative": "http://url.to/creative/image/or/html"
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "title": "Another Campaign",
+      "description": "the other example campaign",
+      "start" : "2014-01-02",
+      "end": "2014-01-28",
+      "status": "active",
+      "tactics": []
+    }
+  ]
+}
+```
+
 ### connection.getMetricsForTactic(tacticId: Integer)
 This method takes the id of a given tactic, and returns a promise that when it fulfills contains a json object with metric
 information. The json object returned depends on the channel of the tactic.
@@ -217,12 +392,23 @@ Example json responses appear below:
 }
 ```
 
+#### If opts.locations contains more than 1 location:
+```
+{
+  "location1": { "an object": "defined in the section above" },
+  "location2": { "an object": "defined in the section above" }
+}
+```
+
 ### connection.getWebsiteMetrics()
 This method will return a promise, that once fulfilled will contain a json object with website metrics for the current
 location's local website. In order for any data to be returned the current location must have a matching local website,
 or empty data will be returned.
 
 Example json appears below:
+
+#### If opts.locations contains 0 or 1 location:
+
 ```
 {
   "campaignId": 34,
@@ -243,6 +429,55 @@ Example json appears below:
     "paidWeb": 30,
     "organicPhone": 4,
     "paidPhone": 8
+  }
+}
+```
+
+#### If opts.locations contains more than 1 location:
+
+```
+{
+  "location1": {
+    "campaignId": 34,
+    "localSiteUrl": "http://www.balihoo.com",
+    "visits": {
+      "total": 125,
+      "organic": 45,
+      "direct": 12,
+      "referral": 34,
+      "paid": 12,
+      "newVisitsPercent": 0.43
+    },
+    "leads": {
+      "total": 123,
+      "totalWeb": 34,
+      "totalPhone": 12,
+      "organicWeb": 4,
+      "paidWeb": 30,
+      "organicPhone": 4,
+      "paidPhone": 8
+    }
+  },
+  "location2": {
+    "campaignId": 34,
+    "localSiteUrl": "http://www.balihoo.com",
+    "visits": {
+      "total": 125,
+      "organic": 45,
+      "direct": 12,
+      "referral": 34,
+      "paid": 12,
+      "newVisitsPercent": 0.43
+    },
+    "leads": {
+      "total": 123,
+      "totalWeb": 34,
+      "totalPhone": 12,
+      "organicWeb": 4,
+      "paidWeb": 30,
+      "organicPhone": 4,
+      "paidPhone": 8
+    }
   }
 }
 ```
