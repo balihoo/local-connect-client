@@ -96,48 +96,111 @@
     return $.ajax(ajaxOptions);
   }
 
+  /**
+   * Turns a list of keys into an URL query parameter string.
+   * @param keys List of location identifiers (key).
+   * @returns {string} A locations query parameter string.
+   */
+  function locationKeysArgToParam(keys) {
+    if (keys) {
+      var keysArray = [];
+      keysArray.push(keys);
+      return 'locations=' + keysArray.join(',');
+    }
+  }
+
+  /**
+   * Format a date into API compatible format.
+   * @param aDate The date to format.
+   * @returns {string} Formatted date.
+   */
+  function formatDate(aDate) {
+    var y = aDate.getFullYear(),
+        m = aDate.getMonth()+1,
+        d = aDate.getDate();
+    return [
+      y,
+      m < 10 ? '0' + m : m,
+      d < 10 ? '0' + d : d
+    ].join('-');
+  }
+
+  /**
+   * Turns a date into an URL query parameter string.
+   * @param param Name of parameter.
+   * @param aDate Date to format as parameter value.
+   * @returns {string} A date query parameter string.
+   */
+  function dateToParam(param, aDate) {
+    if (aDate && aDate instanceof Date)
+      return param + '=' + formatDate(aDate);
+  }
+
+  /**
+   * Turns options into an URL query string.
+   * @param opts Options for API call.
+   * @returns {string} URL query string.
+   */
+  function argsToParamString(opts) {
+    opts = opts || {};
+
+    var p1 = locationKeysArgToParam(opts.locations);
+    var p2 = dateToParam('from', opts.from);
+    var p3 = dateToParam('to', opts.to);
+
+    var params = [];
+    if (p1) params.push(p1);
+    if (p2) params.push(p2);
+    if (p3) params.push(p3);
+
+    if (params.length > 0) {
+      return '?' + params.join('&');
+    } else {
+      return '';
+    }
+  }
 
   /**
    * Gets all the campaigns for your location
    */
-  LocationApi.prototype.getAllCampaigns = function () {
-    return get(this.config, "campaigns");
+  LocationApi.prototype.getAllCampaigns = function (opts) {
+    return get(this.config, "campaigns" + argsToParamString(opts));
   };
 
   /**
    * Gets all tactics for the given campaign for your location
    */
-  LocationApi.prototype.getAllTactics = function (campaignId) {
+  LocationApi.prototype.getAllTactics = function (campaignId, opts) {
     if (typeof campaignId == 'undefined') {
       throw new Error("getAllTactics requires a campaign id");
     }
 
-    return get(this.config, "campaign/"+campaignId+"/tactics");
+    return get(this.config, "campaign/"+campaignId+"/tactics" + argsToParamString(opts));
   };
 
   /**
    * Gets all campaigns with expanded tactics for your location
    */
-  LocationApi.prototype.getAllCampaignsAndTactics = function () {
-    return get(this.config, "campaignswithtactics");
+  LocationApi.prototype.getAllCampaignsAndTactics = function (opts) {
+    return get(this.config, "campaignswithtactics" + argsToParamString(opts));
   };
 
   /**
    * Gets all metrics for a specific tactic
    */
-  LocationApi.prototype.getMetricsForTactic = function (tacticId) {
+  LocationApi.prototype.getMetricsForTactic = function (tacticId, opts) {
     if (typeof tacticId == 'undefined') {
       throw new Error("getMetricsForTactic requires a tactic id");
     }
 
-    return get(this.config, "tactic/"+tacticId+"/metrics");
+    return get(this.config, "tactic/"+tacticId+"/metrics" + argsToParamString(opts));
   };
 
   /**
    * Gets the local website information for the your location
    */
-  LocationApi.prototype.getWebsiteMetrics = function () {
-    return get(this.config, "websitemetrics");
+  LocationApi.prototype.getWebsiteMetrics = function (opts) {
+    return get(this.config, "websitemetrics" + argsToParamString(opts));
   };
 
 
