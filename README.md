@@ -10,7 +10,6 @@ This describes the javascript client for interfacing with the local data api, al
   - [getAllCampaignsAndTactics](#connectiongetallcampaignsandtactics)
   - [getMetricsForTactic(tacticId)](#connectiongetmetricsfortactictacticid-integer)
   - [getWebsiteMetrics()](#connectiongetwebsitemetrics)
-  - [getWebsiteMetrics()](#connectiongetwebsitemetrics)
   - [getProfileForm()](#connectiongetprofileform)
   - [getProfileData()](#connectiongetProfileData)
   - [updateProfileData(profileData)](#connectionupdateprofiledataprofiledata-object)
