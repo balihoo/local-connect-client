@@ -47,7 +47,7 @@ It requires the following query parameters (all are required):
 - apiKey (String): This is the brand specific api key provided by Balihoo to the brand.
 - brandKey (string): This is the brand specific identifier, provided by Balihoo to the brand.
 - locationKey (String): This is the brand specific unique location identifier that the client api key and id are being
-generated for. This is an optional parameter, if omitted, session will allow request for multiple locations at once.
+generated for. _This is an optional parameter, if omitted, session will allow request for multiple locations at once._
 - groupId (String): This is brand specific group identifier. It is used to provide access to different levels of the api.
 Currently this field is not used internally
 - userId (String): This is the user id of the requester of the client api key. It is uses for audit purposes. Currently
@@ -74,6 +74,15 @@ Once a local connection object is obtained, the following method calls can be us
 NOTE: All methods return a promise, or more accurately a Jquery deferred object.
 
 ## Methods
+
+### Common API methods parameters
+
+A common set of query parameters that can be optionnally included to filter results. They are:
+
+- `from`: A start date (format: `yyyy-MM-dd`) from which tactic will be included based on their execution date. (inclusive)
+- `to`: An end date (format: `yyyy-MM-dd`) from which tactic will be included based on their execution date. (exclusive)
+- `locations`: Comma-separated list of location keys (identifier); only tactic executions on behalf of the specified locations will be included in the results. If no tactic execution found for one of the specified key, it is still returned in the result for referring purposes.
+
 ### connection.getAllCampaigns()
 This method returns a promise that when fulfilled will return a json representation of all campaigns that reference the
 current location.
