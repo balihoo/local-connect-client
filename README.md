@@ -5,6 +5,7 @@ This describes the javascript client for interfacing with the local data api, al
 - [Initial Setup](#initial-setup)
 - [API Setup](#api-setup)
 - API Methods
+  - [Common API methods parameters](#common-api-methods-parameters)
   - [getAllCampaigns()](#connectiongetallcampaigns)
   - [getAllTactics(campaignId)](#connectiongetalltacticscampaignid-integer)
   - [getAllCampaignsAndTactics](#connectiongetallcampaignsandtactics)
