@@ -39,9 +39,9 @@ id for each location it wants to grant access to. This typically occurs at the b
 client id and api key are then injected into a dynamic page (via php or some other mechanism) so that it is accessible
 by the javascript object.
 
-To make the call the brand sends the following get request:
+To make the call the brand sends the following POST request:
 
-https://bac.balihoo-cloud.com/v1.0/genClientAPIKey
+https://bac.balihoo-cloud.com/localdata/v1.0/genClientAPIKey
 
 It requires the following query parameters (all are required):
 
