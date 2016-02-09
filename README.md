@@ -11,6 +11,7 @@ This describes the javascript client for interfacing with the local data api, al
   - [getAllCampaignsAndTactics](#connectiongetallcampaignsandtactics)
   - [getMetricsForTactic(tacticId)](#connectiongetmetricsfortactictacticid-integer)
   - [getWebsiteMetrics()](#connectiongetwebsitemetrics)
+  - [getReportData()](#connectiongetreportdata)
   - [getProfileForm()](#connectiongetprofileform)
   - [getProfileData()](#connectiongetProfileData)
   - [updateProfileData(profileData)](#connectionupdateprofiledataprofiledata-object)
@@ -83,6 +84,7 @@ A common set of query parameters that can be optionnally included to filter resu
 - `from`: A start date (format: `yyyy-MM-dd`) from which tactic will be included based on their execution date. (inclusive)
 - `to`: An end date (format: `yyyy-MM-dd`) from which tactic will be included based on their execution date. (exclusive)
 - `locations`: Comma-separated list of location keys (identifier); only tactic executions on behalf of the specified locations will be included in the results. If no tactic execution found for one of the specified key, it is still returned in the result for referring purposes.
+- `tacticId`: Optional tactic id filter on. Only supported in `getReportData` for now.
 
 ### connection.getAllCampaigns()
 This method returns a promise that when fulfilled will return a json representation of all campaigns that reference the
@@ -490,6 +492,30 @@ Example json appears below:
   }
 }
 ```
+### connection.getReportData(reportType: String)
+This method will return a promise, that once fulfilled will contain a json array with report data.
+Currently, supported reports are:
+
+##### Sample response when `reportType` is "EmailSentEvent":
+ ```
+ [
+     {
+        "locationKey": "loc1",
+        "tacticId": 1,
+        "email": "userx@abc.com",
+        "date": "2016-01-27T05:22:25",
+        "status": "unsubscribe"
+     },
+     {
+        "locationKey": "loc1",
+        "tacticId": 1,
+        "email": "usery@abc.com",
+        "date": "2016-01-28T05:22:25",
+        "status": "spamreport"
+     }
+ ]
+ ```
+
 
 ### connection.getProfileForm()
 This method returns a promise which will fetch the corresponding profile form json information from formbuilder.

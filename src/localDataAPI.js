@@ -152,6 +152,7 @@
     if (p1) params.push(p1);
     if (p2) params.push(p2);
     if (p3) params.push(p3);
+    if (opts.tacticId) params.push('tacticId='+opts.tacticId);
 
     if (params.length > 0) {
       return '?' + params.join('&');
@@ -179,7 +180,7 @@
   };
 
   /**
-   * Gets all campaigns with expanded tactics for your location
+   * Gets all campaigns with expanded tactics for your location(s)
    */
   LocationApi.prototype.getAllCampaignsAndTactics = function (opts) {
     return get(this.config, "campaignswithtactics" + argsToParamString(opts));
@@ -197,12 +198,31 @@
   };
 
   /**
-   * Gets the local website information for the your location
+   * Gets the local website information for your location(s)
    */
   LocationApi.prototype.getWebsiteMetrics = function (opts) {
     return get(this.config, "websitemetrics" + argsToParamString(opts));
   };
 
+  /**
+   * Gets the local website information for your location(s)
+   */
+  LocationApi.prototype.getReportData = function (reportType, opts) {
+    var found = false;
+    for (var i in ReportTypes) {
+      if (ReportTypes[i] === reportType) {
+        found = true;
+        break;
+      }
+    }
+
+    if (!found)
+      throw new Error('unsupported report name: '+reportType);
+
+    return get(this.config, 'report/'+reportType+'/export' + argsToParamString(opts));
+  };
+
+  var ReportTypes = [ 'EmailSentEvent' ];
 
   /***************************************
    *

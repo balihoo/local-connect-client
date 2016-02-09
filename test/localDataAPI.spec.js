@@ -190,6 +190,29 @@ describe("localDataAPI", function(){
     });
   });
 
+  describe("getReportData", function(){
+    it("should call jquery ajax method with get expected parameters", function(){
+      connection.getReportData('EmailSentEvent', {
+        locations: ['lockey1', 'lockey2'],
+        from: new Date('2015/01/01'),
+        to: new Date('2015/01/30'),
+        tacticId: 12
+      });
+
+      expect($.ajax).toHaveBeenCalledWith({
+        method: "GET",
+        dataType: "json",
+        headers: fixture.customHeaders(),
+        url: fixture.buildUrl('report/EmailSentEvent/export?locations=lockey1,lockey2&from=2015-01-01&to=2015-01-30&tacticId=12')
+      })
+    });
+    it("throw error when unsupported report type", function(){
+      expect(function() {
+        connection.getReportData('UNSUPPORTED');
+      }).toThrow(new Error('unsupported report name: UNSUPPORTED'));
+    });
+  });
+
   /**************************************************
    * Profile tab tests
    *
