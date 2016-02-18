@@ -379,7 +379,11 @@ Example json responses appear below:
   "channel": "Email",
   "sends": 45,
   "opens": 12,
-  "clicks": 12
+  "clicks": 12,
+  "delivered": 40,
+  "bounced": 1,
+  "unsubsribed": 2,
+  "markedSpam": 2
 }
 ```
 #### Paid Search
@@ -389,7 +393,11 @@ Example json responses appear below:
   "tacticId": 3,
   "channel": "Paid Search",
   "clicks": 45,
-  "spend": 125.12
+  "spend": 125.12,
+  "impressions": 100,
+  "ctr": 0.45,
+  "avgCpc": 2.33,
+  "avgCpm": 12.51
 }
 ```
 #### Display
@@ -398,8 +406,11 @@ Example json responses appear below:
   "campaignId": 34,
   "tacticId": 1,
   "channel": "Display",
-  "impressions": 95,
-  "spend": 125.12
+  "impressions": 100,
+  "spend": 125.12,
+  "ctr": 0.45,
+  "avgCpc": 2.33,
+  "avgCpm": 12.51
 }
 ```
 
